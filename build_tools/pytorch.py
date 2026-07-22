@@ -76,7 +76,9 @@ def setup_pytorch_extension(
         cxx_flags.append("-DNVTE_UB_WITH_MPI")
 
     library_dirs = []
-    libraries = []
+    # The CP gradient-return primitive uses stream-ordered CUDA Driver API
+    # writes and waits for its symmetric epoch protocol.
+    libraries = ["cuda"]
     if bool(int(os.getenv("NVTE_ENABLE_NVSHMEM", 0))):
         assert (
             os.getenv("NVSHMEM_HOME") is not None
